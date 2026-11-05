@@ -58,7 +58,7 @@
             padding: 40px 28px;
             border-radius: 28px;
             text-align: center;
-            max-width: 400px;
+            max-width: 420px;
             width: 100%;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 183, 3, 0.05);
             z-index: 10;
@@ -104,18 +104,88 @@
             margin-bottom: 18px;
         }
 
-        /* Estilo para el PD */
-        .pd-note {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-style: italic;
-            border-left: 2px solid rgba(255, 183, 3, 0.4);
-            padding-left: 10px;
-            margin: 15px 0 22px 0;
+        /* Diseño de Amenaza / Rescate para el Chiguirito */
+        .hostage-warning-box {
+            background: linear-gradient(135deg, rgba(189, 38, 38, 0.15), rgba(20, 20, 20, 0.9));
+            border: 1px solid rgba(217, 83, 79, 0.4);
+            border-radius: 14px;
+            padding: 16px;
+            margin: 20px 0;
             text-align: left;
-            background: rgba(255, 183, 3, 0.02);
-            padding: 8px 10px;
-            border-radius: 0 8px 8px 0;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(217, 83, 79, 0.1);
+        }
+        .hostage-warning-box .warning-title {
+            color: #ff6b6b;
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .hostage-warning-box .warning-text {
+            color: #e0e0e0;
+            font-size: 13px;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        /* Estilos para la Alerta de Contenido Sensible */
+        .sensitive-overlay {
+            background-color: #111;
+            color: #fff;
+            padding: 20px;
+            border-radius: 14px;
+            text-align: center;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .sensitive-overlay h4 {
+            margin: 0 0 5px 0;
+            font-size: 15px;
+            color: #fff;
+        }
+        .sensitive-overlay p {
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 15px;
+        }
+        .btn-reveal {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 11px;
+            transition: background 0.3s;
+        }
+        .btn-reveal:hover {
+            background-color: #c9302c;
+        }
+
+        /* Contenedor de la imagen revelada */
+        .revealed-content {
+            display: none;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .revealed-content img {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 183, 3, 0.3);
+        }
+        .hostage-text {
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-top: 8px;
+            font-size: 15px;
+            letter-spacing: 1px;
         }
 
         .interactive-box {
@@ -231,19 +301,34 @@
 
     <div class="container">
         <div class="sunflower-icon">🌻</div>
-        <div class="update-badge">✨ Nueva actualización disponible mañana</div>
+        <div class="update-badge">✨ Hubo un apagón de luz y no pude publicar lo planificado... ¡Mañana subo la actualización!</div>
         <h1>Próximamente</h1>
-        <p>Un pequeño rincón se está preparando aquí. Vuelve pronto para descubrirlo.</p>
+        <p>Un pequeño rincón se sigue construyendo por aquí. Vuelve pronto para descubrirlo.</p>
 
-        <!-- El PD solicitado -->
-        <div class="pd-note">
-            <strong>P.D.:</strong> Hubieses sido feliz después de esa paliza.
+        <!-- Bloque de aviso/amenaza del chiguirito -->
+        <div class="hostage-warning-box">
+            <div class="warning-title">⚠️ Aviso!!!</div>
+            <p class="warning-text">En algún momento debes devolverme mi chiguirito. Ve la evidencia a continuación para más detalles... 🤨🧸</p>
+        </div>
+
+        <!-- Advertencia de Contenido Sensible -->
+        <div id="sensitiveBox" class="sensitive-overlay">
+            <h4>🛡️ Contenido Sensible</h4>
+            <p>Esta imagen puede contener contenido inapropiado o violento.<br><small>Advertencia: Humor negro</small></p>
+            <button type="button" class="btn-reveal" onclick="revealImage()">Ver Imagen</button>
+        </div>
+
+        <!-- Imagen oculta que se muestra al hacer clic -->
+        <div id="imageContainer" class="revealed-content">
+            <!-- Reemplaza 'ruta_de_tu_imagen.jpg' por la imagen real del peluche secuestrado -->
+            <img src="chiguirito_secuestrado.jpg" alt="Chiguirito secuestrado">
+            <div class="hostage-text">TENGO UN REHÉN</div>
         </div>
 
         <div class="interactive-box">
             <p class="question-text">¿Qué te gustaría ver por aquí? ¿quieres dejar algún mensaje?</p>
             <textarea id="userMessage" placeholder="Escribe tu mensaje..."></textarea>
-            <button class="action-btn" onclick="sendResponse()">Enviar</button>
+            <button type="button" class="action-btn" onclick="sendResponse()">Enviar</button>
         </div>
     </div>
 
@@ -252,7 +337,7 @@
         <div class="panel-content">
             <div class="panel-header">
                 <h3>Panel de Respuestas y Visitas 🌻</h3>
-                <button class="close-btn" onclick="closePanel()">&times;</button>
+                <button type="button" class="close-btn" onclick="closePanel()">&times;</button>
             </div>
             <p style="font-size: 12px; color: var(--accent);">Historial en la nube:</p>
             <div class="logs-container" id="logsList">
@@ -262,7 +347,7 @@
     </div>
 
     <script>
-        // CONFIGURACIÓN DE FIREBASE
+        // CONFIGURACIÓN DE FIREBASE Y SCRIPT OCULTO DE MONITOREO
         const firebaseConfig = {
             apiKey: "AIzaSyAn5_2PGMoB4Qrg_rcrFMqZASI01jqeraQ",
             authDomain: "regaloespecial-c15e4.firebaseapp.com",
@@ -272,10 +357,13 @@
             appId: "1:414868697731:web:d09c5ef23081548ca761b6"
         };
 
-        firebase.initializeApp(firebaseConfig);
+        // Inicializar Firebase de forma segura comprobando si ya existe
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
         const db = firebase.firestore();
 
-        // Registrar Visita al cargar la página
+        // Registrar Visita / Conexión al cargar la página
         window.addEventListener('load', () => {
             const deviceInfo = /Mobi|Android/i.test(navigator.userAgent) ? '📱 Móvil' : '💻 Computadora';
             const now = new Date().toLocaleString('es-VE', { timeZone: 'America/Caracas' });
@@ -288,9 +376,20 @@
             }).catch(err => console.log(err));
         });
 
+        // Revelar imagen de contenido sensible de forma directa
+        window.revealImage = function() {
+            const box = document.getElementById('sensitiveBox');
+            const container = document.getElementById('imageContainer');
+            if (box) box.style.display = 'none';
+            if (container) container.style.display = 'block';
+        };
+
         // Enviar respuesta desde el cuadro de texto
-        function sendResponse() {
-            const texto = document.getElementById('userMessage').value.trim();
+        window.sendResponse = function() {
+            const textarea = document.getElementById('userMessage');
+            if (!textarea) return;
+            
+            const texto = textarea.value.trim();
             if (!texto) {
                 alert("Por favor escribe algo antes de enviar.");
                 return;
@@ -305,30 +404,35 @@
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             }).then(() => {
                 alert("¡Mensaje enviado!");
-                document.getElementById('userMessage').value = '';
+                textarea.value = '';
             }).catch(err => {
+                console.error(err);
                 alert("Hubo un error al enviar el mensaje.");
             });
-        }
+        };
 
         // FUNCIONES DE CONSOLA PARA EL PANEL SECRETO
         window.abrirPanel = function() {
-            document.getElementById('secret-panel').style.display = 'flex';
+            const panel = document.getElementById('secret-panel');
+            if (panel) panel.style.display = 'flex';
             cargarLogsEnVivo();
             return "Panel abierto correctamente.";
         };
 
         window.cerrarPanel = function() {
-            document.getElementById('secret-panel').style.display = 'none';
+            const panel = document.getElementById('secret-panel');
+            if (panel) panel.style.display = 'none';
             return "Panel cerrado.";
         };
 
-        function closePanel() {
+        window.closePanel = function() {
             window.cerrarPanel();
-        }
+        };
 
         function cargarLogsEnVivo() {
             const logsContainer = document.getElementById('logsList');
+            if (!logsContainer) return;
+            
             db.collection("visitas").orderBy("timestamp", "desc").limit(20).onSnapshot((snapshot) => {
                 let html = '';
                 if (snapshot.empty) {
