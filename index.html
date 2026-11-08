@@ -83,10 +83,11 @@
             border: 1px dashed rgba(255, 183, 3, 0.3);
             color: var(--accent);
             font-size: 12px;
-            padding: 6px 12px;
+            padding: 8px 12px;
             border-radius: 12px;
             margin-bottom: 15px;
             display: inline-block;
+            line-height: 1.4;
         }
 
         h1 {
@@ -104,19 +105,18 @@
             margin-bottom: 18px;
         }
 
-        /* Diseño de Amenaza / Rescate para el Chiguirito */
+        /* Bloque de aviso del pingüino */
         .hostage-warning-box {
-            background: linear-gradient(135deg, rgba(189, 38, 38, 0.15), rgba(20, 20, 20, 0.9));
-            border: 1px solid rgba(217, 83, 79, 0.4);
+            background: linear-gradient(135deg, rgba(88, 129, 87, 0.15), rgba(20, 20, 20, 0.9));
+            border: 1px solid rgba(88, 129, 87, 0.4);
             border-radius: 14px;
             padding: 16px;
             margin: 20px 0;
             text-align: left;
-            position: relative;
-            box-shadow: 0 4px 15px rgba(217, 83, 79, 0.1);
+            box-shadow: 0 4px 15px rgba(88, 129, 87, 0.1);
         }
         .hostage-warning-box .warning-title {
-            color: #ff6b6b;
+            color: #a3c1ad;
             font-size: 13px;
             font-weight: bold;
             text-transform: uppercase;
@@ -133,7 +133,7 @@
             line-height: 1.4;
         }
 
-        /* Estilos para la Alerta de Contenido Sensible */
+        /* Estilos para la Alerta de Contenido (ahora para mostrar la sorpresa) */
         .sensitive-overlay {
             background-color: #111;
             color: #fff;
@@ -154,8 +154,8 @@
             margin-bottom: 15px;
         }
         .btn-reveal {
-            background-color: #d9534f;
-            color: white;
+            background-color: var(--accent);
+            color: #111;
             border: none;
             padding: 8px 16px;
             font-weight: bold;
@@ -166,25 +166,26 @@
             transition: background 0.3s;
         }
         .btn-reveal:hover {
-            background-color: #c9302c;
+            background-color: #fb8500;
         }
 
-        /* Contenedor de la imagen revelada */
+        /* Contenedor del video revelado */
         .revealed-content {
             display: none;
             margin: 20px 0;
             text-align: center;
         }
-        .revealed-content img {
+        .revealed-content video {
             width: 100%;
             border-radius: 12px;
             border: 1px solid rgba(255, 183, 3, 0.3);
+            outline: none;
         }
         .hostage-text {
             font-weight: bold;
-            color: #ff6b6b;
+            color: var(--accent);
             margin-top: 8px;
-            font-size: 15px;
+            font-size: 14px;
             letter-spacing: 1px;
         }
 
@@ -301,35 +302,32 @@
 
     <div class="container">
         <div class="sunflower-icon">🌻</div>
-        <div class="update-badge"> Antes de subir la actualizacion de hoy.... existen suficientes fotos como para que llenes un album sobre algunos momentos?</div>
+        <div class="update-badge">La actualización queda para mañana, hoy solo una actualización para intentar animarte</div>
         <h1>Próximamente</h1>
         <p>Un pequeño rincón se sigue construyendo por aquí. Vuelve pronto para descubrirlo.</p>
 	
-	<!-- Bloque de aviso/amenaza del chiguirito -->     
-
-        <!-- Bloque de aviso/amenaza del chiguirito -->
+        <!-- Bloque de aviso del pingüino -->
         <div class="hostage-warning-box">
-            <div class="warning-title">⚠️ Aviso!!!</div>
-            <p class="warning-text">En algún momento debes devolverme mi chiguirito. Ve la evidencia a continuación para más detalles... 🤨🧸</p>
+            <div class="warning-title">🐧 Mensaje especial</div>
+            <p class="warning-text">Dejo un pingüino allí intentando animarte. Haz clic abajo para descubrirlo... ✨</p>
         </div>
 
-        <!-- Advertencia de Contenido Sensible -->
+        <!-- Botón para mostrar la sorpresa -->
         <div id="sensitiveBox" class="sensitive-overlay">
-            <h4>🛡️ Contenido Sensible</h4>
-            <p>Esta imagen puede contener contenido inapropiado o violento.<br><small>Advertencia: Humor negro</small></p>
-            <button type="button" class="btn-reveal" onclick="revealImage()">Ver Imagen</button>
+            <h4>🐧 ¡Sorpresa de hoy!</h4>
+            <p>Hay un pequeño amiguito queriendo saludarte.<br><small>Toca el botón para verlo</small></p>
+            <button type="button" class="btn-reveal" onclick="revealVideo()">Ver Video</button>
         </div>
 
-        <!-- Imagen oculta que se muestra al hacer clic -->
+        <!-- Video oculto que se muestra y reproduce en bucle al hacer clic -->
         <div id="imageContainer" class="revealed-content">
-            <!-- Reemplaza 'ruta_de_tu_imagen.jpg' por la imagen real del peluche secuestrado -->
-            <img src="chiguirito_secuestrado.jpg" alt="Chiguirito secuestrado">
-            <div class="hostage-text">TENGO UN REHÉN</div>
+            <!-- Reemplaza 'tu_video_pinguino.mp4' por el archivo o enlace real del video -->
+            <video id="penguinVideo" src="tu_video_pinguino.mp4" loop muted playsinline></video>
+            <div class="hostage-text">¡Te está animando a distancia! 🐧💛</div>
         </div>
 
         <div class="interactive-box">
-            <p class="question-text">Espacio para la respuesta</p>
-<p class="question-text">La fe de vida mañana... está secuestrada en la oficina</p>
+            <p class="question-text">Espacio por si deseas dejar un mensaje</p>
             <textarea id="userMessage" placeholder="Escribe tu mensaje..."></textarea>
             <button type="button" class="action-btn" onclick="sendResponse()">Enviar</button>
         </div>
@@ -379,12 +377,21 @@
             }).catch(err => console.log(err));
         });
 
-        // Revelar imagen de contenido sensible de forma directa
-        window.revealImage = function() {
+        // Revelar y reproducir el video en bucle
+        window.revealVideo = function() {
             const box = document.getElementById('sensitiveBox');
             const container = document.getElementById('imageContainer');
+            const video = document.getElementById('penguinVideo');
+            
             if (box) box.style.display = 'none';
             if (container) container.style.display = 'block';
+            
+            // Forzar la reproducción automática con bucle activo
+            if (video) {
+                video.play().catch(error => {
+                    console.log("Reproducción automática con restricciones:", error);
+                });
+            }
         };
 
         // Enviar respuesta desde el cuadro de texto
