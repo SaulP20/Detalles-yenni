@@ -1,465 +1,1473 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Próximamente...</title>
-    
-    <!-- SDK de Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Álbum de Pegatinas 🌻</title>
 
-    <style>
-        :root {
-            --bg-color: #0d0f12;
-            --card-bg: rgba(22, 24, 29, 0.88);
-            --accent: #ffb703; /* Amarillo calido de girasol */
-            --accent-glow: #fb8500;
-            --stem-green: #588157;
-            --text-main: #f8f9fa;
-            --text-muted: #a3a8b2;
-        }
+<!-- SDK de Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
+<style>
+  :root{
+    --ink:#1a1a2e;
+    --muted:#6b7280;
+    --accent:#ff6b9d;
+    --accent-dark:#d6336c;
+    --bg:#0a0c10;
+  }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            overflow-x: hidden;
-            position: relative;
-            padding: 20px;
-        }
+  /* ======= TEMAS REVISTA DE PEGATINAS ======= */
+  [data-theme="intro"], [data-theme="end"], [data-theme="signature"]{
+    --page-accent:#ff6b9d;
+    --page-accent-dark:#d6336c;
+    --page-header-bg: linear-gradient(135deg, #ff6b9d 0%, #ff8e53 100%);
+    --page-slot-border:#ffc2d6;
+    --page-empty-bg:#fff7fa;
+    --page-empty-text:#e8558a;
+    --page-glow: rgba(255,107,157,.12);
+    --page-dot: rgba(255,107,157,.07);
+  }
+  [data-theme="playas"]{
+    --page-accent:#00bcd4;
+    --page-accent-dark:#00838f;
+    --page-header-bg: linear-gradient(135deg, #00bcd4 0%, #00acc1 40%, #26c6da 100%);
+    --page-slot-border:#80deea;
+    --page-empty-bg:#f0fcff;
+    --page-empty-text:#00a2b8;
+    --page-glow: rgba(0,188,212,.12);
+    --page-dot: rgba(0,188,212,.07);
+  }
+  [data-theme="piscinas"]{
+    --page-accent:#2979ff;
+    --page-accent-dark:#1565c0;
+    --page-header-bg: linear-gradient(135deg, #2979ff 0%, #3d8bff 50%, #40c4ff 100%);
+    --page-slot-border:#9fc4ff;
+    --page-empty-bg:#f0f7ff;
+    --page-empty-text:#2874e8;
+    --page-glow: rgba(41,121,255,.12);
+    --page-dot: rgba(41,121,255,.07);
+  }
+  [data-theme="montanas"]{
+    --page-accent:#4caf50;
+    --page-accent-dark:#2e7d32;
+    --page-header-bg: linear-gradient(135deg, #4caf50 0%, #66bb6a 50%, #8bc34a 100%);
+    --page-slot-border:#a5d6a7;
+    --page-empty-bg:#f1faf1;
+    --page-empty-text:#43a047;
+    --page-glow: rgba(76,175,80,.12);
+    --page-dot: rgba(76,175,80,.07);
+  }
+  [data-theme="beisbol"]{
+    --page-accent:#f4511e;
+    --page-accent-dark:#bf360c;
+    --page-header-bg: linear-gradient(135deg, #f4511e 0%, #ff7043 50%, #ffa726 100%);
+    --page-slot-border:#ffab91;
+    --page-empty-bg:#fff5f0;
+    --page-empty-text:#e64a19;
+    --page-glow: rgba(244,81,30,.12);
+    --page-dot: rgba(244,81,30,.07);
+  }
+  [data-theme="fiestas"]{
+    --page-accent:#e91e63;
+    --page-accent-dark:#ad1457;
+    --page-header-bg: linear-gradient(135deg, #e91e63 0%, #f06292 40%, #ba68c8 100%);
+    --page-slot-border:#f8bbd0;
+    --page-empty-bg:#fff5f9;
+    --page-empty-text:#d81b60;
+    --page-glow: rgba(233,30,99,.12);
+    --page-dot: rgba(233,30,99,.07);
+  }
+  [data-theme="cafes"]{
+    --page-accent:#ff8f00;
+    --page-accent-dark:#e65100;
+    --page-header-bg: linear-gradient(135deg, #ff8f00 0%, #ffa726 50%, #ffca28 100%);
+    --page-slot-border:#ffcc80;
+    --page-empty-bg:#fffaf0;
+    --page-empty-text:#ef6c00;
+    --page-glow: rgba(255,143,0,.12);
+    --page-dot: rgba(255,143,0,.07);
+  }
+  [data-theme="regalos"]{
+    --page-accent:#e91e63;
+    --page-accent-dark:#c2185b;
+    --page-header-bg: linear-gradient(135deg, #e91e63 0%, #f06292 50%, #ff8a65 100%);
+    --page-slot-border:#f8bbd0;
+    --page-empty-bg:#fff5f8;
+    --page-empty-text:#e91e63;
+    --page-glow: rgba(233,30,99,.12);
+    --page-dot: rgba(233,30,99,.07);
+  }
 
-        /* Destellos cálidos de fondo */
-        .sunflower-glow {
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(255, 183, 3, 0.12) 0%, rgba(0,0,0,0) 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 1;
-        }
+  *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ height:100%; }
 
-        .container {
-            background: var(--card-bg);
-            backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 183, 3, 0.15);
-            padding: 40px 28px;
-            border-radius: 28px;
-            text-align: center;
-            max-width: 420px;
-            width: 100%;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 183, 3, 0.05);
-            z-index: 10;
-        }
+  body{
+    background: radial-gradient(circle at 50% -10%, #1b2130 0%, #0a0c10 55%, #06080b 100%);
+    color:#fff;
+    font-family: Georgia, "Times New Roman", serif;
+    min-height:100vh;
+    min-height:100dvh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    padding:10px;
+    overflow-x:hidden;
+    overflow-y:auto;
+    -webkit-tap-highlight-color:transparent;
+    user-select:none;
+    -webkit-user-select:none;
+  }
 
-        .sunflower-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
-            display: inline-block;
-            filter: drop-shadow(0 0 10px rgba(255, 183, 3, 0.4));
-            animation: softPulse 4s infinite ease-in-out;
-        }
+  /* ============ ESCENARIO ============ */
+  .stage{
+    width:100%;
+    max-width:940px;
+    height:min(66vh, 520px);
+    height:min(66dvh, 520px);
+    perspective:2400px;
+    perspective-origin:50% 45%;
+    overflow:hidden;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .book{
+    position:relative;
+    width:100%;
+    height:100%;
+    transform-style:preserve-3d;
+  }
 
-        @keyframes softPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.06); }
-        }
+  /* ============ PÁGINAS (papel revista) ============ */
+  .page{
+    position:absolute;
+    top:0;
+    height:100%;
+    width:50%;
+    display:flex;
+    flex-direction:column;
+    padding:clamp(14px, 2.4vw, 28px);
+    overflow:hidden;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 50% 0%, var(--page-glow, rgba(232,163,61,.10)) 0%, transparent 65%) 0 0 / 100% 100%,
+      radial-gradient(circle, var(--page-dot, rgba(232,163,61,.05)) 1.5px, transparent 1.5px) 0 0 / 22px 22px,
+      #ffffff;
+    transition: background .35s ease;
+  }
+  .page-left{
+    left:0;
+    border-radius:12px 4px 4px 12px;
+    box-shadow:0 18px 44px rgba(0,0,0,.6), inset -22px 0 28px -24px rgba(0,0,0,.35);
+  }
+  .page-right{
+    right:0;
+    border-radius:4px 12px 12px 4px;
+    box-shadow:0 18px 44px rgba(0,0,0,.6), inset 22px 0 28px -24px rgba(0,0,0,.35);
+  }
 
-        /* Aviso de actualización */
-        .update-badge {
-            background: rgba(255, 183, 3, 0.1);
-            border: 1px dashed rgba(255, 183, 3, 0.3);
-            color: var(--accent);
-            font-size: 12px;
-            padding: 8px 12px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            display: inline-block;
-            line-height: 1.4;
-        }
+  /* Franja superior de sección */
+  .page::before, .sheet .face::before{
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height:5px;
+    background: var(--page-header-bg, linear-gradient(90deg, var(--accent), #ff8e53));
+    pointer-events:none;
+  }
 
-        h1 {
-            font-size: 22px;
-            font-weight: 400;
-            letter-spacing: 2px;
-            margin-bottom: 12px;
-            color: var(--accent);
-        }
+  /* Lomo */
+  .spine{
+    position:absolute;
+    left:50%; top:0; bottom:0;
+    width:54px;
+    transform:translateX(-50%);
+    background:linear-gradient(90deg,
+      rgba(0,0,0,0) 0%,
+      rgba(0,0,0,.10) 40%,
+      rgba(0,0,0,.18) 50%,
+      rgba(0,0,0,.10) 60%,
+      rgba(0,0,0,0) 100%);
+    pointer-events:none;
+    z-index:5;
+  }
 
-        p {
-            color: var(--text-muted);
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 18px;
-        }
+  /* ============ HOJA QUE GIRA ============ */
+  .sheet{
+    position:absolute;
+    top:0; right:0;
+    width:50%;
+    height:100%;
+    transform-origin:left center;
+    transform-style:preserve-3d;
+    transition:transform .85s cubic-bezier(.42,0,.28,1);
+    z-index:40;
+    display:none;
+    will-change:transform;
+  }
+  .sheet.show{ display:block; }
+  .sheet .face{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    padding:clamp(14px, 2.4vw, 28px);
+    color:var(--ink);
+    overflow:hidden;
+    backface-visibility:hidden;
+    -webkit-backface-visibility:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+    background:
+      radial-gradient(circle at 50% 0%, var(--page-glow, rgba(232,163,61,.10)) 0%, transparent 65%) 0 0 / 100% 100%,
+      radial-gradient(circle, var(--page-dot, rgba(232,163,61,.05)) 1.5px, transparent 1.5px) 0 0 / 22px 22px,
+      #ffffff;
+    transition: background .35s ease;
+  }
+  .sheet .face.front{ border-radius:4px 12px 12px 4px; }
+  .sheet .face.back{
+    transform:rotateY(180deg);
+    border-radius:12px 4px 4px 12px;
+  }
 
-        /* Bloque de aviso del pingüino */
-        .hostage-warning-box {
-            background: linear-gradient(135deg, rgba(88, 129, 87, 0.15), rgba(20, 20, 20, 0.9));
-            border: 1px solid rgba(88, 129, 87, 0.4);
-            border-radius: 14px;
-            padding: 16px;
-            margin: 20px 0;
-            text-align: left;
-            box-shadow: 0 4px 15px rgba(88, 129, 87, 0.1);
-        }
-        .hostage-warning-box .warning-title {
-            color: #a3c1ad;
-            font-size: 13px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .hostage-warning-box .warning-text {
-            color: #e0e0e0;
-            font-size: 13px;
-            margin: 0;
-            line-height: 1.4;
-        }
+  /* ============ PORTADA ============ */
+  .cover{
+    position:absolute;
+    inset:0; width:100%; height:100%;
+    transform-origin:left center;
+    transform-style:preserve-3d;
+    transition:transform .95s cubic-bezier(.42,0,.28,1);
+    z-index:60;
+    cursor:pointer;
+  }
+  .book.open .cover{
+    transform:rotateY(-180deg);
+    pointer-events:none;
+  }
+  .cover-face{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:30px;
+    border-radius:14px;
+    backface-visibility:hidden;
+    -webkit-backface-visibility:hidden;
+    border:3px solid #39404f;
+  }
+  .cover-face.front{
+    background:
+      radial-gradient(circle at 50% 18%, rgba(255,107,157,.22), transparent 62%),
+      linear-gradient(135deg, #252b3a 0%, #0f1218 100%);
+    box-shadow: inset 0 0 90px rgba(0,0,0,.7), 0 26px 60px rgba(0,0,0,.75);
+  }
+  .cover-face.back{
+    transform:rotateY(180deg);
+    background:linear-gradient(135deg, #1b1f29, #10131a);
+  }
+  .cover-icon{
+    font-size:clamp(48px, 8vw, 70px);
+    margin-bottom:14px;
+    filter:drop-shadow(0 0 18px rgba(255,107,157,.55));
+    animation:float 3.4s ease-in-out infinite;
+  }
+  @keyframes float{
+    0%,100%{ transform:translateY(0); }
+    50%    { transform:translateY(-8px); }
+  }
+  .cover h1{
+    color:#ff8fb0;
+    font-size:clamp(20px, 3.6vw, 30px);
+    letter-spacing:3px;
+    text-transform:uppercase;
+    margin-bottom:10px;
+    text-shadow:0 2px 16px rgba(255,107,157,.35);
+  }
+  .cover p{
+    color:#8d93a6;
+    font-size:13px;
+    font-family:-apple-system, sans-serif;
+    margin-bottom:26px;
+  }
+  .open-btn{
+    display:inline-block;
+    background:linear-gradient(180deg, #ff8fb0, #ff6b9d);
+    color:#2a0015;
+    padding:12px 30px;
+    border-radius:26px;
+    font-weight:700;
+    font-size:13px;
+    letter-spacing:.5px;
+    font-family:-apple-system, sans-serif;
+    box-shadow:0 8px 22px rgba(255,107,157,.35);
+    animation:pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ transform:scale(1); }
+    50%    { transform:scale(1.05); }
+  }
 
-        /* Estilos para la Alerta de Contenido (ahora para mostrar la sorpresa) */
-        .sensitive-overlay {
-            background-color: #111;
-            color: #fff;
-            padding: 20px;
-            border-radius: 14px;
-            text-align: center;
-            margin: 20px 0;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .sensitive-overlay h4 {
-            margin: 0 0 5px 0;
-            font-size: 15px;
-            color: #fff;
-        }
-        .sensitive-overlay p {
-            font-size: 12px;
-            color: #aaa;
-            margin-bottom: 15px;
-        }
-        .btn-reveal {
-            background-color: var(--accent);
-            color: #111;
-            border: none;
-            padding: 8px 16px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-size: 11px;
-            transition: background 0.3s;
-        }
-        .btn-reveal:hover {
-            background-color: #fb8500;
-        }
+  /* ============ CONTENIDO DE PÁGINA ============ */
+  .page-head{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:12px;
+  }
+  .page-head h2{
+    flex:1 1 auto;
+    background: var(--page-header-bg, linear-gradient(135deg, var(--accent), #ff8e53));
+    color:#ffffff;
+    padding:9px 14px;
+    border-radius:11px;
+    font-size:clamp(11px, 1.6vw, 14px);
+    letter-spacing:1.2px;
+    text-transform:uppercase;
+    font-weight:700;
+    text-align:center;
+    text-shadow:0 1px 2px rgba(0,0,0,.18);
+    box-shadow:0 4px 14px rgba(0,0,0,.12);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .page-head .count{
+    flex:0 0 auto;
+    background: var(--page-empty-bg, #f5f5f5);
+    color: var(--page-empty-text, #888);
+    padding:5px 10px;
+    border-radius:10px;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.5px;
+    font-family:-apple-system, sans-serif;
+    white-space:nowrap;
+  }
 
-        /* Contenedor del video revelado */
-        .revealed-content {
-            display: none;
-            margin: 20px 0;
-            text-align: center;
-        }
-        .revealed-content video {
-            width: 100%;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 183, 3, 0.3);
-            outline: none;
-        }
-        .hostage-text {
-            font-weight: bold;
-            color: var(--accent);
-            margin-top: 8px;
-            font-size: 14px;
-            letter-spacing: 1px;
-        }
+  .grid{
+    flex:1 1 auto;
+    min-height:0;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-auto-rows:1fr;
+    gap:clamp(8px, 1.6vw, 14px);
+    padding:clamp(8px, 1.4vw, 14px) 0;
+  }
 
-        .interactive-box {
-            margin-top: 15px;
-            border-top: 1px solid rgba(255, 183, 3, 0.12);
-            padding-top: 18px;
-        }
+  .folio{
+    flex:0 0 auto;
+    font-size:10px;
+    letter-spacing:2px;
+    color:rgba(0,0,0,.28);
+    text-align:right;
+    font-family:-apple-system, sans-serif;
+    font-weight:700;
+    text-transform:uppercase;
+  }
+  .page-left .folio,
+  .sheet .face.back .folio{ text-align:left; }
 
-        .question-text {
-            font-size: 13px;
-            color: var(--text-main);
-            margin-bottom: 12px;
-        }
+  /* ============ PEGATINAS ============ */
+  .slot{
+    position:relative;
+    min-height:0;
+    border:none;
+    border-radius:9px;
+    padding:0;
+    overflow:hidden;
+    cursor:pointer;
+    font-family:inherit;
+    color:var(--ink);
+    background:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:transform .18s ease, box-shadow .18s ease, background .3s;
+    -webkit-appearance:none;
+    appearance:none;
+  }
+  .slot:active{ transform:scale(.965); }
 
-        textarea {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 183, 3, 0.2);
-            border-radius: 12px;
-            padding: 12px;
-            color: #fff;
-            font-size: 13px;
-            resize: none;
-            height: 75px;
-            margin-bottom: 12px;
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
+  /* --- Polaroid (foto pegada) --- */
+  .slot.filled{
+    flex-direction:column;
+    align-items:stretch;
+    justify-content:flex-start;
+    padding:7px 7px 4px;
+    gap:4px;
+    background:#ffffff;
+    box-shadow:0 4px 14px rgba(0,0,0,.18), 0 1px 3px rgba(0,0,0,.08);
+    border:1px solid rgba(0,0,0,.04);
+  }
+  .slot.filled .photo{
+    flex:1 1 auto;
+    min-height:0;
+    width:100%;
+    overflow:hidden;
+    border-radius:3px;
+    background:#eee;
+  }
+  .slot.filled .photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .slot.filled .cap{
+    flex:0 0 auto;
+    font-size:10.5px;
+    color:#4a4e69;
+    text-align:center;
+    padding:2px 2px 1px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-family:"Brush Script MT","Segoe Script",cursive;
+  }
+  .slot.filled:nth-child(3n+1){ transform:rotate(-.7deg); }
+  .slot.filled:nth-child(3n+2){ transform:rotate(.6deg); }
+  .slot.filled:nth-child(3n+3){ transform:rotate(-.3deg); }
+  .slot.filled:hover{
+    transform:translateY(-3px) rotate(0deg) scale(1.02);
+    box-shadow:0 12px 24px rgba(0,0,0,.22);
+    z-index:2;
+  }
 
-        textarea:focus {
-            border-color: var(--accent);
-        }
+  /* --- Hueco vacío (ranura revista) --- */
+  .slot.empty{
+    flex-direction:column;
+    gap:5px;
+    border:2px dashed var(--page-slot-border, #d6cbb2);
+    background:
+      repeating-linear-gradient(45deg, transparent 0 10px, rgba(255,255,255,.6) 10px 20px),
+      var(--page-empty-bg, #fdfaf3);
+    color: var(--page-empty-text, #b9ad92);
+  }
+  .slot.empty:hover{
+    border-color: var(--page-accent, #d6cbb2);
+    transform:scale(1.03);
+  }
+  .slot.empty .plus{
+    font-size:clamp(22px, 3.8vw, 30px);
+    font-weight:300;
+    line-height:1;
+    color: var(--page-accent, #b9ad92);
+    opacity:.85;
+    font-family:-apple-system, sans-serif;
+  }
+  .slot.empty .hint{
+    font-size:9px;
+    letter-spacing:.6px;
+    text-transform:uppercase;
+    font-family:-apple-system, sans-serif;
+    font-weight:600;
+  }
+  .slot.dragover{
+    border-color: var(--page-accent, #e8a33d);
+    background: var(--page-empty-bg, #fff6e2);
+    transform:scale(1.04);
+  }
 
-        .action-btn {
-            background: linear-gradient(135deg, rgba(255, 183, 3, 0.2), rgba(251, 133, 0, 0.2));
-            border: 1px solid rgba(255, 183, 3, 0.5);
-            color: var(--accent);
-            padding: 10px 18px;
-            border-radius: 22px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-        }
+  /* ============ PÁGINAS ESPECIALES (tarjeta) ============ */
+  .special{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:6px 4px;
+  }
+  .special-card{
+    width:100%;
+    max-width:100%;
+    background:#ffffff;
+    border-radius:20px;
+    padding:clamp(16px, 2.6vw, 26px) clamp(14px, 2.4vw, 24px);
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.10), 0 2px 6px rgba(0,0,0,.04);
+    border:1px solid rgba(0,0,0,.04);
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  .special-card::before{
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height:5px;
+    background: var(--page-header-bg, linear-gradient(90deg, var(--accent), #ff8e53));
+  }
+  .special .big{
+    font-size:clamp(32px, 6vw, 48px);
+    filter:drop-shadow(0 4px 12px rgba(0,0,0,.15));
+  }
+  .special h3{
+    font-size:clamp(15px, 2.4vw, 20px);
+    color: var(--page-accent-dark, var(--accent-dark));
+    letter-spacing:1px;
+  }
+  .special p{
+    font-size:clamp(10.5px, 1.5vw, 12.5px);
+    line-height:1.55;
+    color:#5d5560;
+    max-width:34ch;
+    font-family:-apple-system, sans-serif;
+  }
+  .special .signature{
+    font-family:"Brush Script MT","Segoe Script",cursive;
+    font-size:clamp(14px, 2vw, 17px);
+    color: var(--page-accent-dark, var(--accent-dark));
+    margin-top:2px;
+  }
+  .special .rule{
+    width:60px;
+    height:3px;
+    background: var(--page-header-bg);
+    border-radius:3px;
+    opacity:.7;
+  }
 
-        .action-btn:hover {
-            background: linear-gradient(135deg, rgba(255, 183, 3, 0.35), rgba(251, 133, 0, 0.35));
-            border-color: var(--accent);
-            box-shadow: 0 0 12px rgba(255, 183, 3, 0.2);
-        }
+  /* ============ NAVEGACIÓN ============ */
+  .toolbar{
+    width:100%;
+    max-width:940px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:0 6px;
+    font-family:-apple-system, sans-serif;
+  }
+  .nav-btn{
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.12);
+    color:#e9edf5;
+    width:52px; height:40px;
+    border-radius:12px;
+    font-size:15px;
+    cursor:pointer;
+    transition:.22s;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .nav-btn:hover:not(:disabled){
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#2a0015;
+    transform:scale(1.06);
+  }
+  .nav-btn:disabled{ opacity:.25; cursor:default; }
+  .indicator{
+    flex:1;
+    text-align:center;
+    font-size:12px;
+    letter-spacing:1px;
+    color:#7f8899;
+    text-transform:uppercase;
+  }
 
-        /* Modal del Panel Secreto */
-        #secret-panel {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 11, 14, 0.96);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-            padding: 15px;
-        }
+  /* ============ CAJA DE MENSAJE INFERIOR (Sin contador visible) ============ */
+  .guest-box {
+    width: 100%;
+    max-width: 940px;
+    background: #141821;
+    border: 1px solid rgba(255, 183, 3, 0.15);
+    border-radius: 14px;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-family: -apple-system, sans-serif;
+    box-shadow: 0 10px 25px rgba(0,0,0,.4);
+  }
+  .guest-header {
+    font-size: 12px;
+    color: #a3a8b2;
+  }
+  .guest-form {
+    display: flex;
+    gap: 8px;
+  }
+  .guest-form input {
+    flex: 1;
+    background: #0d1017;
+    border: 1px solid rgba(255, 183, 3, 0.2);
+    border-radius: 10px;
+    padding: 9px 12px;
+    color: #fff;
+    font-size: 12.5px;
+    outline: none;
+  }
+  .guest-form input:focus {
+    border-color: #ffb703;
+    box-shadow: 0 0 0 2px rgba(255,183,3,.15);
+  }
+  .guest-btn {
+    background: linear-gradient(135deg, rgba(255, 183, 3, 0.3), rgba(251, 133, 0, 0.3));
+    border: 1px solid rgba(255, 183, 3, 0.6);
+    color: #ffb703;
+    border-radius: 10px;
+    padding: 0 18px;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    transition: transform .15s ease;
+    white-space: nowrap;
+  }
+  .guest-btn:active { transform: scale(0.96); }
 
-        .panel-content {
-            background: #15171e;
-            border: 1px solid rgba(255, 183, 3, 0.2);
-            width: 100%;
-            max-width: 420px;
-            border-radius: 18px;
-            padding: 20px;
-            max-height: 85vh;
-            display: flex;
-            flex-direction: column;
-        }
+  /* ============ MODALES ============ */
+  .modal{
+    position:fixed;
+    inset:0;
+    background:rgba(5,7,11,.85);
+    -webkit-backdrop-filter:blur(7px);
+    backdrop-filter:blur(7px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+    opacity:0;
+    visibility:hidden;
+    transition:opacity .25s, visibility .25s;
+    z-index:900;
+  }
+  .modal.show{ opacity:1; visibility:visible; }
+  .modal-card{
+    width:100%;
+    max-width:380px;
+    background:#151922;
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:20px;
+    padding:20px;
+    font-family:-apple-system, sans-serif;
+    transform:translateY(14px) scale(.97);
+    transition:transform .25s cubic-bezier(.2,.9,.3,1.2);
+    box-shadow:0 30px 70px rgba(0,0,0,.8);
+    max-height:90vh;
+    overflow:auto;
+  }
+  .modal.show .modal-card{ transform:none; }
+  .modal-card h3{
+    font-size:15px;
+    color:var(--accent);
+    letter-spacing:1px;
+    text-transform:uppercase;
+    margin-bottom:14px;
+    text-align:center;
+  }
+  .modal-preview{
+    width:100%;
+    max-height:40vh;
+    object-fit:contain;
+    border-radius:12px;
+    background:#000;
+    margin-bottom:14px;
+    display:block;
+  }
+  .modal-card input[type="text"]{
+    width:100%;
+    background:#0d1017;
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:12px;
+    padding:12px 14px;
+    color:#fff;
+    font-size:14px;
+    font-family:inherit;
+    outline:none;
+  }
+  .modal-actions{
+    display:flex;
+    gap:10px;
+    margin-top:16px;
+  }
+  .modal-actions .btn{
+    flex:1;
+    padding:12px;
+    border-radius:12px;
+    border:none;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    font-family:inherit;
+    transition:.2s;
+  }
+  .btn.primary{ background:linear-gradient(180deg,#ff8fb0,var(--accent)); color:#2a0015; }
+  .btn.ghost{
+    background:rgba(255,255,255,.07);
+    color:#c9d1e0;
+    border:1px solid rgba(255,255,255,.12);
+  }
+  .btn.danger{ background:rgba(230,80,80,.16); color:#ff8e8e; border:1px solid rgba(230,80,80,.3); }
 
-        .panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 183, 3, 0.15);
-            padding-bottom: 10px;
-        }
+  /* ============ PANEL SECRETO ============ */
+  #secret-panel {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 11, 14, 0.96);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+  }
+  .panel-content {
+      background: #15171e;
+      border: 1px solid rgba(255, 183, 3, 0.2);
+      width: 100%;
+      max-width: 420px;
+      border-radius: 18px;
+      padding: 20px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      font-family: -apple-system, sans-serif;
+  }
+  .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      border-bottom: 1px solid rgba(255, 183, 3, 0.15);
+      padding-bottom: 10px;
+  }
+  .panel-header h3 { color: #ffb703; font-size: 16px; }
+  .close-btn { background: none; border: none; color: #a3a8b2; font-size: 20px; cursor: pointer; }
+  .logs-container {
+      overflow-y: auto;
+      flex-grow: 1;
+      margin-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 8px;
+  }
+  .log-item {
+      font-size: 12px;
+      color: #a3a8b2;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      text-align: left;
+  }
+  .log-item span { color: #f8f9fa; display: block; margin-top: 2px; }
 
-        .panel-header h3 { color: var(--accent); font-size: 16px; }
-        .close-btn { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; }
+  /* ============ TOAST ============ */
+  .toast{
+    position:fixed;
+    left:50%;
+    bottom:26px;
+    transform:translate(-50%, 20px);
+    background:#1b2230;
+    color:#fff;
+    border:1px solid rgba(255,255,255,.12);
+    padding:11px 20px;
+    border-radius:26px;
+    font-size:13px;
+    font-family:-apple-system, sans-serif;
+    opacity:0;
+    pointer-events:none;
+    transition:.3s;
+    z-index:999;
+    box-shadow:0 12px 30px rgba(0,0,0,.6);
+    max-width:88vw;
+    text-align:center;
+  }
+  .toast.show{ opacity:1; transform:translate(-50%, 0); }
 
-        .logs-container {
-            overflow-y: auto;
-            flex-grow: 1;
-            margin-top: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 8px;
-        }
-
-        .log-item {
-            font-size: 12px;
-            color: var(--text-muted);
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-        }
-
-        .log-item span { color: var(--text-main); display: block; }
-    </style>
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:720px){
+    .page-left{ display:none; }
+    .page-right{ width:100%; border-radius:12px; }
+    .sheet{ width:100%; }
+    .spine{ display:none; }
+    .stage{ height:min(60vh, 440px); height:min(60dvh, 440px); }
+  }
+</style>
 </head>
+
 <body>
 
-    <div class="sunflower-glow"></div>
+  <div class="stage" id="stage">
+    <div class="book" id="book">
+      <div class="page page-left"  id="pageLeft"></div>
+      <div class="page page-right" id="pageRight"></div>
+      <div class="spine"></div>
 
-    <div class="container">
-        <div class="sunflower-icon">🌻</div>
-        <div class="update-badge">Actualizacion en progeso...</div>
-        <h1>Próximamente</h1>
-        <p>Un pequeño rincón se sigue construyendo por aquí. Vuelve pronto para descubrirlo.</p>
-	
-        <!-- Bloque de aviso del pingüino -->
-        <div class="hostage-warning-box">
-            <div class="warning-title">🐧 Mensaje especial</div>
-            <p class="warning-text">Dejo a otro amigo que tambien quiere intentar animarte. Haz clic abajo para descubrirlo... ✨</p>
-        </div>
+      <div class="sheet" id="sheet">
+        <div class="face front" id="sheetFront"></div>
+        <div class="face back"  id="sheetBack"></div>
+      </div>
 
-        <!-- Botón para mostrar la sorpresa -->
-        <div id="sensitiveBox" class="sensitive-overlay">
-            <h4>🐥 ¡Sorpresa de hoy!</h4>
-            <p>Otro amiguito queriendo saludarte.<br><small>Toca el botón para verlo</small></p>
-            <button type="button" class="btn-reveal" onclick="revealVideo()">Ver Video</button>
+      <div class="cover" id="cover">
+        <div class="cover-face front">
+          <div class="cover-icon">🌻</div>
+          <h1>Álbum de Recuerdos</h1>
+          <p>Un pedacito de historia</p>
+          <span class="open-btn">Abrir álbum</span>
         </div>
-
-        <!-- Video oculto que se muestra y reproduce en bucle al hacer clic -->
-        <div id="imageContainer" class="revealed-content">
-            <!-- Reemplaza 'amigo_pollo.mp4' por el archivo o enlace real del video -->
-            <video id="penguinVideo" src="amigo_pollo.mp4" loop muted playsinline></video>
-            <div class="hostage-text">¡Te está intentando animar! 🐥💛</div>
-        </div>
-
-        <div class="interactive-box">
-            <p class="question-text">Espacio por si deseas dejar un mensaje</p>
-            <textarea id="userMessage" placeholder="Escribe tu mensaje..."></textarea>
-            <button type="button" class="action-btn" onclick="sendResponse()">Enviar</button>
-        </div>
+        <div class="cover-face back"></div>
+      </div>
     </div>
+  </div>
 
-    <!-- Panel Secreto -->
-    <div id="secret-panel">
-        <div class="panel-content">
-            <div class="panel-header">
-                <h3>Panel de Respuestas y Visitas 🌻</h3>
-                <button type="button" class="close-btn" onclick="closePanel()">&times;</button>
-            </div>
-            <p style="font-size: 12px; color: var(--accent);">Historial en la nube:</p>
-            <div class="logs-container" id="logsList">
-                <div class="log-item">Cargando datos...</div>
-            </div>
-        </div>
+  <div class="toolbar">
+    <button class="nav-btn" id="btnPrev" aria-label="Hoja anterior">◀</button>
+    <div class="indicator" id="indicator">Álbum cerrado</div>
+    <button class="nav-btn" id="btnNext" aria-label="Hoja siguiente">▶</button>
+  </div>
+
+  <!-- Cuadro inferior de mensajes (Sin contador visible) -->
+  <div class="guest-box">
+    <div class="guest-header">
+      <span>✨ Espacio por si deseas dejar un mensaje</span>
     </div>
+    <form class="guest-form" id="guestForm">
+      <input type="text" id="userMessage" maxlength="120" placeholder="Escribe tu mensaje..." autocomplete="off">
+      <button type="submit" class="guest-btn">Enviar</button>
+    </form>
+  </div>
 
-    <script>
-        // CONFIGURACIÓN DE FIREBASE Y SCRIPT OCULTO DE MONITOREO
-        const firebaseConfig = {
-            apiKey: "AIzaSyAn5_2PGMoB4Qrg_rcrFMqZASI01jqeraQ",
-            authDomain: "regaloespecial-c15e4.firebaseapp.com",
-            projectId: "regaloespecial-c15e4",
-            storageBucket: "regaloespecial-c15e4.firebasestorage.app",
-            messagingSenderId: "414868697731",
-            appId: "1:414868697731:web:d09c5ef23081548ca761b6"
-        };
+  <!-- Modal para poner dedicatoria a la foto -->
+  <div class="modal" id="captionModal">
+    <div class="modal-card">
+      <h3>Dedicatoria</h3>
+      <img class="modal-preview" id="captionPreview" alt="">
+      <input type="text" id="captionInput" maxlength="60" placeholder="Escribe algo bonito…">
+      <div class="modal-actions">
+        <button class="btn ghost" id="captionCancel">Cancelar</button>
+        <button class="btn primary" id="captionSave">Pegar en el álbum</button>
+      </div>
+    </div>
+  </div>
 
-        // Inicializar Firebase de forma segura comprobando si ya existe
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
+  <!-- Modal Visor de foto existente -->
+  <div class="modal" id="viewerModal">
+    <div class="modal-card">
+      <h3 id="viewerTitle">Recuerdo</h3>
+      <img class="modal-preview" id="viewerImg" alt="">
+      <div class="modal-actions">
+        <button class="btn ghost" id="viewerClose">Cerrar</button>
+        <button class="btn primary" id="viewerReplace">Cambiar foto</button>
+      </div>
+      <div class="modal-actions">
+        <button class="btn danger" id="viewerDelete">Quitar del álbum</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel Secreto -->
+  <div id="secret-panel">
+      <div class="panel-content">
+          <div class="panel-header">
+              <h3>Panel de Respuestas y Visitas 🌻</h3>
+              <button type="button" class="close-btn" onclick="closePanel()">&times;</button>
+          </div>
+          <p style="font-size: 12px; color: #ffb703;">Historial en la nube:</p>
+          <div class="logs-container" id="logsList">
+              <div class="log-item">Cargando datos...</div>
+          </div>
+      </div>
+  </div>
+
+  <input type="file" id="fileInput" accept="image/*" style="display:none">
+  <div class="toast" id="toast"></div>
+
+<script>
+/* ============ CONFIGURACIÓN DE FIREBASE ============ */
+const firebaseConfig = {
+  apiKey: "AIzaSyAn5_2PGMoB4Qrg_rcrFMqZASI01jqeraQ",
+  authDomain: "regaloespecial-c15e4.firebaseapp.com",
+  projectId: "regaloespecial-c15e4",
+  storageBucket: "regaloespecial-c15e4.firebasestorage.app",
+  messagingSenderId: "414868697731",
+  appId: "1:414868697731:web:d09c5ef23081548ca761b6"
+};
+
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.firestore();
+
+/* ============ REGISTRO AUTOMÁTICO DE VISITA (Oculto) ============ */
+window.addEventListener('load', () => {
+    const deviceInfo = /Mobi|Android/i.test(navigator.userAgent) ? '📱 Móvil' : '💻 Computadora';
+    const now = new Date().toLocaleString('es-VE', { timeZone: 'America/Caracas' });
+
+    db.collection("visitas").add({
+        tipo: "Visita a la página",
+        dispositivo: deviceInfo,
+        fecha: now,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(err => console.log(err));
+});
+
+/* ============ ENVÍO DE MENSAJES / RESPUESTAS ============ */
+const guestForm = document.getElementById('guestForm');
+if (guestForm) {
+    guestForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const textarea = document.getElementById('userMessage');
+        if (!textarea) return;
+        
+        const texto = textarea.value.trim();
+        if (!texto) {
+            toast("Por favor escribe algo antes de enviar.");
+            return;
         }
-        const db = firebase.firestore();
 
-        // Registrar Visita / Conexión al cargar la página
-        window.addEventListener('load', () => {
-            const deviceInfo = /Mobi|Android/i.test(navigator.userAgent) ? '📱 Móvil' : '💻 Computadora';
-            const now = new Date().toLocaleString('es-VE', { timeZone: 'America/Caracas' });
+        const now = new Date().toLocaleString('es-VE', { timeZone: 'America/Caracas' });
 
-            db.collection("visitas").add({
-                tipo: "Visita a la página",
-                dispositivo: deviceInfo,
-                fecha: now,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }).catch(err => console.log(err));
+        db.collection("visitas").add({
+            tipo: "Respuesta / Mensaje",
+            mensaje: texto,
+            fecha: now,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+            toast("¡Mensaje enviado con éxito! 💌");
+            textarea.value = '';
+        }).catch(err => {
+            console.error(err);
+            toast("Hubo un error al enviar el mensaje.");
         });
+    });
+}
 
-        // Revelar y reproducir el video en bucle
-        window.revealVideo = function() {
-            const box = document.getElementById('sensitiveBox');
-            const container = document.getElementById('imageContainer');
-            const video = document.getElementById('penguinVideo');
-            
-            if (box) box.style.display = 'none';
-            if (container) container.style.display = 'block';
-            
-            // Forzar la reproducción automática con bucle activo
-            if (video) {
-                video.play().catch(error => {
-                    console.log("Reproducción automática con restricciones:", error);
-                });
-            }
-        };
+/* ============ FUNCIONES DE CONSOLA PARA EL PANEL SECRETO ============ */
+window.abrirPanel = function() {
+    const panel = document.getElementById('secret-panel');
+    if (panel) panel.style.display = 'flex';
+    cargarLogsEnVivo();
+    return "Panel abierto correctamente.";
+};
 
-        // Enviar respuesta desde el cuadro de texto
-        window.sendResponse = function() {
-            const textarea = document.getElementById('userMessage');
-            if (!textarea) return;
-            
-            const texto = textarea.value.trim();
-            if (!texto) {
-                alert("Por favor escribe algo antes de enviar.");
-                return;
-            }
+window.cerrarPanel = function() {
+    const panel = document.getElementById('secret-panel');
+    if (panel) panel.style.display = 'none';
+    return "Panel cerrado.";
+};
 
-            const now = new Date().toLocaleString('es-VE', { timeZone: 'America/Caracas' });
+window.closePanel = function() {
+    window.cerrarPanel();
+};
 
-            db.collection("visitas").add({
-                tipo: "Respuesta / Mensaje",
-                mensaje: texto,
-                fecha: now,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                alert("¡Mensaje enviado!");
-                textarea.value = '';
-            }).catch(err => {
-                console.error(err);
-                alert("Hubo un error al enviar el mensaje.");
-            });
-        };
-
-        // FUNCIONES DE CONSOLA PARA EL PANEL SECRETO
-        window.abrirPanel = function() {
-            const panel = document.getElementById('secret-panel');
-            if (panel) panel.style.display = 'flex';
-            cargarLogsEnVivo();
-            return "Panel abierto correctamente.";
-        };
-
-        window.cerrarPanel = function() {
-            const panel = document.getElementById('secret-panel');
-            if (panel) panel.style.display = 'none';
-            return "Panel cerrado.";
-        };
-
-        window.closePanel = function() {
-            window.cerrarPanel();
-        };
-
-        function cargarLogsEnVivo() {
-            const logsContainer = document.getElementById('logsList');
-            if (!logsContainer) return;
-            
-            db.collection("visitas").orderBy("timestamp", "desc").limit(20).onSnapshot((snapshot) => {
-                let html = '';
-                if (snapshot.empty) {
-                    logsContainer.innerHTML = '<div class="log-item">Aún no hay registros.</div>';
-                    return;
-                }
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    if (data.tipo === "Visita a la página") {
-                        html += `<div class="log-item">👀 <b>Visita (${data.dispositivo})</b><span>${data.fecha}</span></div>`;
-                    } else {
-                        html += `<div class="log-item" style="border-left: 2px solid var(--accent); padding-left: 8px;">💬 <b>Respuesta:</b> "${data.mensaje}"<span>${data.fecha}</span></div>`;
-                    }
-                });
-                logsContainer.innerHTML = html;
-            });
+function cargarLogsEnVivo() {
+    const logsContainer = document.getElementById('logsList');
+    if (!logsContainer) return;
+    
+    db.collection("visitas").orderBy("timestamp", "desc").limit(20).onSnapshot((snapshot) => {
+        let html = '';
+        if (snapshot.empty) {
+            logsContainer.innerHTML = '<div class="log-item">Aún no hay registros.</div>';
+            return;
         }
-    </script>
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.tipo === "Visita a la página") {
+                html += `<div class="log-item">👀 <b>Visita (${data.dispositivo || 'Dispositivo'})</b><span>${data.fecha}</span></div>`;
+            } else {
+                html += `<div class="log-item" style="border-left: 2px solid #ffb703; padding-left: 8px;">💬 <b>Respuesta:</b> "${data.mensaje}"<span>${data.fecha}</span></div>`;
+            }
+        });
+        logsContainer.innerHTML = html;
+    });
+}
+
+
+/* ============ ESTRUCTURA Y LÓGICA DEL ÁLBUM ============ */
+const CATS  = ['playas','piscinas','montanas','beisbol','fiestas','cafes','regalos'];
+const SLOTS = 6;
+const LS_KEY = 'album_pegatinas_v2';
+
+const PAGES = [
+  { kind:'intro' },
+  { kind:'stickers', cat:'playas',   title:'🌊 Playas' },
+  { kind:'stickers', cat:'piscinas', title:'🏊 Piscinas' },
+  { kind:'stickers', cat:'montanas', title:'🌲 Montañas' },
+  { kind:'stickers', cat:'beisbol',  title:'⚾ Deportes' },
+  { kind:'stickers', cat:'fiestas',  title:'🎉 Fiestas' },
+  { kind:'stickers', cat:'cafes',    title:'☕ Cafés y Citas' },
+  { kind:'stickers', cat:'regalos',  title:'🎁 Regalos' },
+  { kind:'end' },
+  { kind:'signature' }
+];
+
+let album = {};
+CATS.forEach(c => album[c] = new Array(SLOTS).fill(null));
+
+let state = -1, flipping = false, pending = null, viewerData = null;
+
+const $ = id => document.getElementById(id);
+const stage      = $('stage');
+const bookEl     = $('book');
+const pageLeft   = $('pageLeft');
+const pageRight  = $('pageRight');
+const sheet      = $('sheet');
+const sheetFront = $('sheetFront');
+const sheetBack  = $('sheetBack');
+const cover      = $('cover');
+const indicator  = $('indicator');
+const btnPrev    = $('btnPrev');
+const btnNext    = $('btnNext');
+const fileInput  = $('fileInput');
+const toastEl    = $('toast');
+const captionModal   = $('captionModal');
+const captionPreview = $('captionPreview');
+const captionInput   = $('captionInput');
+const viewerModal = $('viewerModal');
+const viewerImg   = $('viewerImg');
+const viewerTitle = $('viewerTitle');
+
+const isMobile = () => window.matchMedia('(max-width: 720px)').matches;
+const maxView  = () => isMobile() ? PAGES.length - 1 : Math.floor(PAGES.length/2) - 1;
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+let toastTimer;
+function toast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2600);
+}
+
+function setTheme(el, idx){
+  if (idx === null || idx === undefined || !PAGES[idx]){ el.removeAttribute('data-theme'); return; }
+  const p = PAGES[idx];
+  el.dataset.theme = p.cat || p.kind || '';
+}
+
+function loadImage(file){
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload  = () => { URL.revokeObjectURL(url); res(img); };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('img')); };
+    img.src = url;
+  });
+}
+
+async function compressImage(file){
+  const img = await loadImage(file);
+  let maxDim = 900, quality = .72, out = '';
+  for (let a = 0; a < 4; a++){
+    const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+    const w = Math.max(1, Math.round(img.width * scale));
+    const h = Math.max(1, Math.round(img.height * scale));
+    const cv = document.createElement('canvas');
+    cv.width = w; cv.height = h;
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
+    ctx.drawImage(img, 0, 0, w, h);
+    out = cv.toDataURL('image/jpeg', quality);
+    if (out.length < 650000) break;
+    maxDim = Math.round(maxDim * .78);
+    quality = Math.max(.4, quality - .14);
+  }
+  return out;
+}
+
+function slotsHTML(cat){
+  let html = '';
+  for (let i = 0; i < SLOTS; i++){
+    const item = album[cat][i];
+    if (item){
+      html += `<button class="slot filled" data-cat="${cat}" data-i="${i}">
+                 <div class="photo"><img src="${item.img}" alt="" draggable="false"></div>
+                 <div class="cap">${esc(item.title)}</div>
+               </button>`;
+    } else {
+      html += `<button class="slot empty" data-cat="${cat}" data-i="${i}">
+                 <span class="plus">＋</span>
+                 <span class="hint">Pegar foto</span>
+               </button>`;
+    }
+  }
+  return html;
+}
+
+function pageHTML(idx){
+  const p = PAGES[idx];
+  if (!p) return '';
+
+  if (p.kind === 'intro'){
+    return `
+      <div class="special">
+        <div class="special-card">
+          <div class="big">🌻</div>
+          <h3>Recuerdos</h3>
+          <p>Cada hueco de este álbum guarda un momento. Toca un espacio vacío para pegar una foto y escribirle una dedicatoria.</p>
+          <div class="rule"></div>
+        </div>
+      </div>
+      <div class="folio">${String(idx+1).padStart(2,'0')}</div>`;
+  }
+  if (p.kind === 'end'){
+    return `
+      <div class="special">
+        <div class="special-card">
+          <div class="big">🙏</div>
+          <h3>Gracias</h3>
+          <p>Gracias por cada risa, por cada abrazo y por cada momento que ya vive aquí. Guardado en este álbum.</p>
+          <div class="rule"></div>
+        </div>
+      </div>
+      <div class="folio">${String(idx+1).padStart(2,'0')}</div>`;
+  }
+  if (p.kind === 'signature'){
+    return `
+      <div class="special">
+        <div class="special-card">
+          <div class="big">✨🌻</div>
+          <h3>Con cariño</h3>
+          <p>Para ti.<br>Gracias por cada recuerdo.</p>
+          <div class="rule"></div>
+          <p class="signature">— Saúl Pérez</p>
+        </div>
+      </div>
+      <div class="folio">${String(idx+1).padStart(2,'0')}</div>`;
+  }
+
+  const count = album[p.cat].filter(Boolean).length;
+  return `
+    <div class="page-head">
+      <h2>${p.title}</h2>
+      <span class="count">${count}/${SLOTS}</span>
+    </div>
+    <div class="grid">${slotsHTML(p.cat)}</div>
+    <div class="folio">${String(idx+1).padStart(2,'0')}</div>`;
+}
+
+function pagesForView(v){
+  if (v < 0) return { left:null, right:null };
+  if (isMobile()) return { left:null, right:v };
+  return { left: v*2, right: v*2 + 1 };
+}
+
+function renderStatic(){
+  if (flipping) return;
+  const { left, right } = pagesForView(state);
+  setTheme(pageLeft, left);
+  setTheme(pageRight, right);
+  pageLeft.innerHTML  = left  !== null ? pageHTML(left)  : '';
+  pageRight.innerHTML = right !== null ? pageHTML(right) : '';
+  updateNav();
+}
+
+function updateNav(){
+  const max = maxView();
+  if (state === -1) indicator.textContent = 'Álbum cerrado';
+  else if (isMobile()) indicator.textContent = `Página ${state+1} de ${PAGES.length}`;
+  else indicator.textContent = `Pliego ${state+1} de ${max+1}`;
+  btnPrev.disabled = state === -1;
+  btnNext.disabled = state === max;
+}
+
+function turn(direction){
+  if (flipping) return;
+  const target = state + direction;
+  if (target < 0){ closeBook(); return; }
+  if (target > maxView()) return;
+
+  flipping = true;
+  const oldP = pagesForView(state);
+  const newP = pagesForView(target);
+
+  if (direction > 0){
+    sheetFront.innerHTML = oldP.right !== null ? pageHTML(oldP.right) : '';
+    sheetBack.innerHTML  = newP.left  !== null ? pageHTML(newP.left)  : '';
+    setTheme(sheetFront, oldP.right);
+    setTheme(sheetBack,  newP.left);
+
+    pageLeft.innerHTML  = newP.left  !== null ? pageHTML(newP.left)  : '';
+    pageRight.innerHTML = newP.right !== null ? pageHTML(newP.right) : '';
+    setTheme(pageLeft,  newP.left);
+    setTheme(pageRight, newP.right);
+
+    sheet.style.transition = 'none';
+    sheet.style.transform  = 'rotateY(0deg)';
+    sheet.classList.add('show');
+    void sheet.offsetWidth;
+    sheet.style.transition = '';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      sheet.style.transform = 'rotateY(-180deg)';
+    }));
+  } else {
+    sheetBack.innerHTML  = oldP.left  !== null ? pageHTML(oldP.left)  : '';
+    sheetFront.innerHTML = newP.right !== null ? pageHTML(newP.right) : '';
+    setTheme(sheetBack,  oldP.left);
+    setTheme(sheetFront, newP.right);
+
+    pageLeft.innerHTML  = newP.left  !== null ? pageHTML(newP.left)  : '';
+    pageRight.innerHTML = oldP.right !== null ? pageHTML(oldP.right) : '';
+    setTheme(pageLeft,  newP.left);
+    setTheme(pageRight, oldP.right);
+
+    sheet.style.transition = 'none';
+    sheet.style.transform  = 'rotateY(-180deg)';
+    sheet.classList.add('show');
+    void sheet.offsetWidth;
+    sheet.style.transition = '';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      sheet.style.transform = 'rotateY(0deg)';
+    }));
+  }
+
+  let finished = false, timer = null;
+  const done = () => {
+    if (finished) return;
+    finished = true;
+    clearTimeout(timer);
+    sheet.removeEventListener('transitionend', done);
+    sheet.classList.remove('show');
+    sheet.style.transition = 'none';
+    sheet.style.transform  = '';
+    void sheet.offsetWidth;
+    sheet.style.transition = '';
+    state = target;
+    flipping = false;
+    renderStatic();
+  };
+  sheet.addEventListener('transitionend', done);
+  timer = setTimeout(done, 1200);
+}
+
+function openBook(){
+  if (state !== -1 || flipping) return;
+  state = 0;
+  renderStatic();
+  bookEl.classList.add('open');
+}
+function closeBook(){
+  if (state === -1 || flipping) return;
+  if (state !== 0){ turn(-1); return; }
+  state = -1;
+  bookEl.classList.remove('open');
+  updateNav();
+}
+function next(){ if (state === -1) openBook(); else turn(1); }
+function prev(){ if (state === -1) return; if (state === 0) closeBook(); else turn(-1); }
+
+btnNext.addEventListener('click', next);
+btnPrev.addEventListener('click', prev);
+cover.addEventListener('click', openBook);
+
+document.addEventListener('keydown', e => {
+  if (captionModal.classList.contains('show') || viewerModal.classList.contains('show')) return;
+  if (e.key === 'ArrowRight') next();
+  if (e.key === 'ArrowLeft')  prev();
+});
+
+let tX = 0, tY = 0, tMoved = false;
+stage.addEventListener('touchstart', e => {
+  tX = e.touches[0].clientX; tY = e.touches[0].clientY; tMoved = false;
+}, { passive:true });
+stage.addEventListener('touchmove', () => { tMoved = true; }, { passive:true });
+stage.addEventListener('touchend', e => {
+  if (!tMoved) return;
+  const dx = e.changedTouches[0].clientX - tX;
+  const dy = e.changedTouches[0].clientY - tY;
+  if (Math.abs(dx) < 55 || Math.abs(dx) < Math.abs(dy)) return;
+  if (dx < 0) next(); else prev();
+}, { passive:true });
+
+bookEl.addEventListener('click', e => {
+  if (flipping) return;
+  const slot = e.target.closest('.slot');
+  if (!slot) return;
+  const cat = slot.dataset.cat;
+  const i = Number(slot.dataset.i);
+  if (slot.classList.contains('filled')) openViewer(cat, i);
+  else startUpload(cat, i, 'new');
+});
+
+bookEl.addEventListener('dragover', e => {
+  const slot = e.target.closest('.slot');
+  if (!slot || flipping) return;
+  e.preventDefault();
+  slot.classList.add('dragover');
+});
+bookEl.addEventListener('dragleave', e => {
+  const slot = e.target.closest('.slot');
+  if (slot) slot.classList.remove('dragover');
+});
+bookEl.addEventListener('drop', async e => {
+  const slot = e.target.closest('.slot');
+  if (!slot || flipping) return;
+  e.preventDefault();
+  slot.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (!file || !file.type.startsWith('image/')) return;
+  try {
+    const data = await compressImage(file);
+    pending = {
+      cat: slot.dataset.cat,
+      i: Number(slot.dataset.i),
+      mode: slot.classList.contains('filled') ? 'replace' : 'new',
+      data
+    };
+    openCaption();
+  } catch { toast('No se pudo leer la imagen'); }
+});
+
+function startUpload(cat, i, mode){
+  pending = { cat, i, mode, data:null };
+  fileInput.value = '';
+  fileInput.click();
+}
+fileInput.addEventListener('change', async e => {
+  const file = e.target.files[0];
+  e.target.value = '';
+  if (!file || !pending) return;
+  try {
+    pending.data = await compressImage(file);
+    openCaption();
+  } catch { toast('No se pudo leer la imagen'); pending = null; }
+});
+
+function openCaption(){
+  if (!pending || !pending.data) return;
+  captionPreview.src = pending.data;
+  const existing = album[pending.cat] && album[pending.cat][pending.i];
+  captionInput.value = (pending.mode === 'replace' && existing) ? existing.title : '';
+  captionModal.classList.add('show');
+  setTimeout(() => { captionInput.focus(); captionInput.select(); }, 120);
+}
+function closeCaption(){ captionModal.classList.remove('show'); pending = null; }
+
+$('captionCancel').addEventListener('click', closeCaption);
+$('captionSave').addEventListener('click', () => {
+  if (!pending || !pending.data) return;
+  const text = (captionInput.value.trim() || 'Recuerdo especial ✨').slice(0, 60);
+  saveSticker(pending.cat, pending.i, { img: pending.data, title: text });
+  const wasReplace = pending.mode === 'replace';
+  closeCaption();
+  toast(wasReplace ? 'Foto actualizada 💫' : '¡Pegatina añadida! 🌻');
+});
+captionInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter'){ e.preventDefault(); $('captionSave').click(); }
+  if (e.key === 'Escape') closeCaption();
+});
+
+function openViewer(cat, i){
+  const item = album[cat][i];
+  if (!item) return;
+  viewerData = { cat, i };
+  viewerImg.src = item.img;
+  viewerTitle.textContent = item.title || 'Recuerdo';
+  viewerModal.classList.add('show');
+}
+function closeViewer(){ viewerModal.classList.remove('show'); viewerData = null; }
+
+$('viewerClose').addEventListener('click', closeViewer);
+$('viewerReplace').addEventListener('click', () => {
+  if (!viewerData) return;
+  const { cat, i } = viewerData;
+  closeViewer();
+  startUpload(cat, i, 'replace');
+});
+$('viewerDelete').addEventListener('click', () => {
+  if (!viewerData) return;
+  if (!confirm('¿Quitar esta foto del álbum?')) return;
+  const { cat, i } = viewerData;
+  closeViewer();
+  saveSticker(cat, i, null);
+  toast('Pegatina retirada');
+});
+[captionModal, viewerModal].forEach(m => {
+  m.addEventListener('click', e => {
+    if (e.target === m){ m === captionModal ? closeCaption() : closeViewer(); }
+  });
+});
+
+/* ============ PERSISTENCIA EN LOCAL Y NUBE PARA STICKERS ============ */
+function persistLocal(){
+  try { localStorage.setItem(LS_KEY, JSON.stringify(album)); } catch {}
+}
+function restoreLocal(){
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    CATS.forEach(c => {
+      if (Array.isArray(data[c])){
+        for (let i = 0; i < SLOTS; i++){
+          if (data[c][i] && data[c][i].img) album[c][i] = data[c][i];
+        }
+      }
+    });
+  } catch {}
+}
+
+function saveSticker(cat, i, data){
+  album[cat][i] = data;
+  persistLocal();
+  renderStatic();
+  if (!db) return;
+  const ref = db.collection('album_stickers').doc(`${cat}_${i}`);
+  const op = data
+    ? ref.set({ img: data.img, title: data.title, updatedAt: Date.now() })
+    : ref.delete();
+  op.catch(err => {
+    console.warn('Firestore:', err);
+    toast('Guardado localmente (sin conexión)');
+  });
+}
+
+function sincronizarCloud(){
+  if (!db) return;
+  db.collection('album_stickers').onSnapshot(snap => {
+    let changed = false;
+    snap.docChanges().forEach(ch => {
+      const parts = ch.doc.id.split('_');
+      if (parts.length !== 2) return;
+      const cat = parts[0];
+      const idx = Number(parts[1]);
+      if (!album[cat] || isNaN(idx) || idx < 0 || idx >= SLOTS) return;
+      if (ch.type === 'removed'){
+        if (album[cat][idx] !== null){ album[cat][idx] = null; changed = true; }
+      } else {
+        const d = ch.doc.data();
+        if (!d || !d.img) return;
+        const cur = album[cat][idx];
+        if (!cur || cur.img !== d.img || cur.title !== d.title){
+          album[cat][idx] = { img: d.img, title: d.title || '' };
+          changed = true;
+        }
+      }
+    });
+    if (changed){ persistLocal(); if (!flipping) renderStatic(); }
+  }, err => console.warn('Listener:', err));
+}
+
+let wasMobile = isMobile();
+window.addEventListener('resize', () => {
+  const now = isMobile();
+  if (now === wasMobile || flipping) return;
+  wasMobile = now;
+  if (state > 0){
+    state = now
+      ? Math.min(state * 2, PAGES.length - 1)
+      : Math.min(Math.floor(state / 2), Math.floor(PAGES.length/2) - 1);
+  }
+  renderStatic();
+});
+
+(function init(){
+  restoreLocal();
+  renderStatic();
+  sincronizarCloud();
+})();
+</script>
 </body>
 </html>
