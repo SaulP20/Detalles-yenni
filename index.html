@@ -627,6 +627,53 @@
   }
   .guest-btn:active { transform: scale(0.96); }
 
+
+/* ============ NOTA FUERA DEL ÁLBUM ============ */
+  .secret-note{
+    width:100%;
+    max-width:940px;
+    display:flex;
+    justify-content:center;
+    padding:2px 6px 0;
+    animation:notePop .7s cubic-bezier(.2,.9,.3,1.3);
+  }
+  .secret-note .paper{
+    position:relative;
+    background:linear-gradient(135deg, #fff6c9 0%, #ffe98d 100%);
+    color:#5a4400;
+    padding:10px 22px;
+    border-radius:4px;
+    transform:rotate(-2deg);
+    box-shadow:0 10px 22px rgba(0,0,0,.45), 0 2px 4px rgba(0,0,0,.15);
+    font-family:"Brush Script MT","Segoe Script",cursive;
+    font-size:clamp(13px, 2vw, 16px);
+    text-align:center;
+    border:1px solid rgba(0,0,0,.05);
+    max-width:92vw;
+  }
+  .secret-note .paper::before{
+    content:'';
+    position:absolute;
+    top:-9px; left:50%;
+    transform:translateX(-50%) rotate(-3deg);
+    width:64px; height:18px;
+    background:rgba(255,255,255,.55);
+    border:1px solid rgba(0,0,0,.05);
+    box-shadow:0 2px 5px rgba(0,0,0,.12);
+  }
+  .secret-note .paper strong{
+    color:#b55a00;
+    font-weight:700;
+  }
+  @keyframes notePop{
+    0%  { opacity:0; transform:translateY(-10px) rotate(-2deg) scale(.9); }
+    100%{ opacity:1; transform:translateY(0) rotate(-2deg) scale(1); }
+  }
+
+
+
+
+
   /* ============ MODALES ============ */
   .modal{
     position:fixed;
@@ -826,6 +873,13 @@
     <button class="nav-btn" id="btnPrev" aria-label="Hoja anterior">◀</button>
     <div class="indicator" id="indicator">Álbum cerrado</div>
     <button class="nav-btn" id="btnNext" aria-label="Hoja siguiente">▶</button>
+  </div>
+
+<!-- Notita fuera del álbum -->
+  <div class="secret-note" aria-label="Nota">
+    <div class="paper">
+      📌 La página de <strong>⚾ Deportes</strong> te quedó buenísima… <em>(revísala) 👀</em>
+    </div>
   </div>
 
   <!-- Cuadro inferior de mensajes (Sin contador visible) -->
