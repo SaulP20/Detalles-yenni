@@ -670,131 +670,120 @@ flex-shrink:0;
     100%{ opacity:1; transform:translateY(0) rotate(-2deg) scale(1); }
   }
 
- /* ============ CUADRO DE CONTENIDO SENSIBLE ============ */
-  .sensitive-box{
+   /* ============ BOTÓN "SI NO HAS TENIDO UN BUEN DÍA" ============ */
+  .comfort-box{
     width:100%;
     max-width:940px;
-    background:#141821;
-    border:1px solid rgba(255, 80, 80, 0.18);
-    border-radius:14px;
-    padding:12px 16px;
-    font-family:-apple-system, sans-serif;
-    box-shadow:0 10px 25px rgba(0,0,0,.4);
     display:flex;
-    flex-direction:column;
-    gap:10px;
+    justify-content:center;
+    padding:2px 6px 0;
     animation:notePop .7s cubic-bezier(.2,.9,.3,1.3);
   }
-  .sensitive-header{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    font-size:11.5px;
-    color:#ff8e8e;
-    font-weight:700;
-    letter-spacing:1px;
-    text-transform:uppercase;
-  }
-  .sensitive-header .warn-icon{ font-size:15px; }
-
-  .sensitive-body{
+  .comfort-btn{
     position:relative;
-    border-radius:10px;
+    background:linear-gradient(135deg, #ffb3c7 0%, #ff8fb0 45%, #ff6b9d 100%);
+    border:none;
+    color:#3a0018;
+    padding:14px 26px;
+    border-radius:999px;
+    font-family:-apple-system, sans-serif;
+    font-size:clamp(12.5px, 1.8vw, 14px);
+    font-weight:700;
+    letter-spacing:.4px;
+    cursor:pointer;
+    text-align:center;
+    max-width:92vw;
+    line-height:1.35;
+    box-shadow:0 10px 24px rgba(255,107,157,.35), 0 2px 6px rgba(0,0,0,.25);
+    transition:transform .18s ease, box-shadow .18s ease;
     overflow:hidden;
-    background:#0d1017;
-    min-height:220px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
   }
-
-  .sensitive-cover{
+  .comfort-btn::before{
+    content:'';
     position:absolute;
     inset:0;
+    background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,.45) 50%, transparent 100%);
+    transform:translateX(-100%);
+    transition:transform .7s ease;
+  }
+  .comfort-btn:hover::before{ transform:translateX(100%); }
+  .comfort-btn:hover{
+    box-shadow:0 14px 30px rgba(255,107,157,.5), 0 4px 10px rgba(0,0,0,.3);
+    transform:translateY(-2px);
+  }
+  .comfort-btn:active{ transform:scale(.97); }
+  .comfort-btn .heart{
+    display:inline-block;
+    margin-right:6px;
+    animation:pulse 2.4s ease-in-out infinite;
+  }
+
+  /* ============ OVERLAY FULLSCREEN DEL VIDEO DEL PATITO ============ */
+  .duck-overlay{
+    position:fixed;
+    inset:0;
+    background:#000;
+    z-index:1500;
     display:flex;
-    flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:12px;
-    background:repeating-linear-gradient(45deg, #1a1d26 0 10px, #16191f 10px 20px);
-    z-index:2;
-    transition:opacity .45s ease, transform .45s ease;
-    padding:18px;
-    text-align:center;
-  }
-  .sensitive-cover::before{
-    content:'⚠️';
-    font-size:34px;
-    filter:drop-shadow(0 4px 10px rgba(0,0,0,.6));
-  }
-  .sensitive-cover .msg{
-    font-size:12px;
-    color:#b0b6c0;
-    line-height:1.5;
-    max-width:34ch;
-  }
-  .sensitive-cover .reveal-btn{
-    background:linear-gradient(135deg, #ff5050, #c41e1e);
-    border:none;
-    color:#fff;
-    padding:10px 24px;
-    border-radius:22px;
-    font-size:12px;
-    font-weight:700;
-    cursor:pointer;
-    letter-spacing:.6px;
-    box-shadow:0 6px 18px rgba(255,80,80,.35);
-    transition:transform .18s, box-shadow .18s;
-  }
-  .sensitive-cover .reveal-btn:hover{ box-shadow:0 10px 24px rgba(255,80,80,.5); }
-  .sensitive-cover .reveal-btn:active{ transform:scale(.96); }
-
-  .sensitive-body.revealed .sensitive-cover{
     opacity:0;
-    pointer-events:none;
-    transform:scale(1.06);
+    visibility:hidden;
+    transition:opacity .35s ease, visibility .35s ease;
   }
-
-  .sensitive-img-wrap{
+  .duck-overlay.show{
+    opacity:1;
+    visibility:visible;
+  }
+  .duck-overlay video{
     width:100%;
+    height:100%;
+    object-fit:contain;
+    background:#000;
+    outline:none;
+  }
+  .duck-close{
+    position:absolute;
+    top:16px;
+    right:16px;
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:rgba(0,0,0,.55);
+    border:1px solid rgba(255,255,255,.25);
+    color:#fff;
+    font-size:22px;
+    line-height:1;
+    cursor:pointer;
     display:flex;
     align-items:center;
     justify-content:center;
-    padding:10px;
-    opacity:0;
-    transition:opacity .55s ease .15s;
+    -webkit-backdrop-filter:blur(6px);
+    backdrop-filter:blur(6px);
+    transition:background .2s, transform .2s;
+    z-index:2;
   }
-  .sensitive-body.revealed .sensitive-img-wrap{ opacity:1; }
+  .duck-close:hover{ background:rgba(0,0,0,.8); transform:scale(1.06); }
+  .duck-close:active{ transform:scale(.94); }
 
-  .sensitive-img-wrap img{
-    max-width:100%;
-    max-height:240px;
-    border-radius:10px;
-    display:block;
-    box-shadow:0 10px 26px rgba(0,0,0,.55);
-  }
-
-  .sensitive-actions{
-    display:flex;
-    justify-content:flex-end;
-    gap:8px;
-  }
-  .sensitive-actions .small-btn{
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.12);
-    color:#a3a8b2;
-    padding:6px 12px;
-    border-radius:8px;
+  .duck-hint{
+    position:absolute;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    color:rgba(255,255,255,.7);
+    font-family:-apple-system, sans-serif;
     font-size:11px;
-    cursor:pointer;
-    font-family:inherit;
-    transition:.2s;
+    letter-spacing:.6px;
+    background:rgba(0,0,0,.4);
+    padding:7px 14px;
+    border-radius:20px;
+    pointer-events:none;
+    -webkit-backdrop-filter:blur(6px);
+    backdrop-filter:blur(6px);
+    transition:opacity .5s ease;
   }
-  .sensitive-actions .small-btn:hover{
-    background:rgba(255,255,255,.12);
-    color:#fff;
-  }
-  .sensitive-actions .small-btn.hidden{ display:none; }
+  .duck-overlay.playing .duck-hint{ opacity:0; }
 
   /* ============ MODALES ============ */
   .modal{
@@ -1000,8 +989,7 @@ flex-shrink:0;
 <!-- Notita fuera del álbum -->
   <div class="secret-note" aria-label="Nota">
     <div class="paper">
-      📌 Por eso debes devolvermelo...
-    </div>
+      📌 abajooo...    </div>
   </div>
 
   <!-- Cuadro inferior de mensajes (Sin contador visible) -->
@@ -1015,26 +1003,20 @@ flex-shrink:0;
     </form>
   </div>
 
-<!-- Cuadro de contenido sensible (Rehén) -->
-  <div class="sensitive-box" id="sensitiveBox">
-    <div class="sensitive-header">
-      <span class="warn-icon">⚠️</span>
-      <span>Contenido sensible</span>
-    </div>
-    <div class="sensitive-body" id="sensitiveBody">
-      <div class="sensitive-cover" id="sensitiveCover">
-        <div class="msg">Hay algo aquí que podría herir tu sensibilidad… Pruebas de vida junto al resultado de anoche para que no digas que no es de hoy.</div>
-        <button type="button" class="reveal-btn" id="revealBtn">Mostrar imagen</button>
-      </div>
-      <div class="sensitive-img-wrap" id="sensitiveImgWrap">
-        <img id="sensitiveImg" src="rehen.jpeg" alt="Contenido sensible">
-      </div>
-    </div>
-    <div class="sensitive-actions">
-      <button type="button" class="small-btn hidden" id="sensitiveHideBtn">🙈 Ocultar</button>
-    </div>
+<!-- Botón amigo: si no has tenido un buen día -->
+  <div class="comfort-box">
+    <button type="button" class="comfort-btn" id="comfortBtn">
+      <span class="heart">💛</span>
+      Presiona si no has tenido un buen día o necesitas que un amigo intente animarte
+    </button>
   </div>
 
+  <!-- Video fullscreen del patito con flores -->
+  <div class="duck-overlay" id="duckOverlay" aria-hidden="true">
+    <button type="button" class="duck-close" id="duckClose" aria-label="Cerrar video">✕</button>
+    <video id="duckVideo" src="pato.mp4" playsinline preload="metadata" loop></video>
+    <div class="duck-hint" id="duckHint">Toca el video si no suena</div>
+  </div>
 
   <!-- Modal para poner dedicatoria a la foto -->
   <div class="modal" id="captionModal">
@@ -1660,23 +1642,69 @@ window.addEventListener('resize', () => {
   renderStatic();
 });
 
-/* ============ CUADRO DE CONTENIDO SENSIBLE (REHÉN) ============ */
-const sensitiveBody = document.getElementById('sensitiveBody');
-const revealBtn     = document.getElementById('revealBtn');
-const hideBtn       = document.getElementById('sensitiveHideBtn');
 
-if (revealBtn){
-  revealBtn.addEventListener('click', () => {
-    sensitiveBody.classList.add('revealed');
-    hideBtn.classList.remove('hidden');
+/* ============ BOTÓN AMIGO + VIDEO DEL PATITO (EN LOOP) ============ */
+const comfortBtn   = document.getElementById('comfortBtn');
+const duckOverlay  = document.getElementById('duckOverlay');
+const duckVideo    = document.getElementById('duckVideo');
+const duckClose    = document.getElementById('duckClose');
+
+function abrirPato(){
+  if (!duckOverlay || !duckVideo) return;
+
+  duckOverlay.classList.add('show');
+  duckOverlay.setAttribute('aria-hidden', 'false');
+  duckOverlay.classList.remove('playing');
+
+  duckVideo.loop = true;               // por si acaso el atributo no se aplicó
+  duckVideo.currentTime = 0;           // empieza siempre desde el inicio
+
+  const p = duckVideo.play();
+  if (p && typeof p.then === 'function'){
+    p.then(() => {
+      // Reproducción iniciada con sonido: todo bien.
+    }).catch(() => {
+      // El navegador bloqueó el autoplay con sonido: probamos silenciado.
+      duckVideo.muted = true;
+      duckVideo.play().catch(() => {
+        // Si incluso silenciado falla, mostramos la pista para que el usuario toque.
+        const hint = document.getElementById('duckHint');
+        if (hint) hint.style.opacity = '1';
+      });
+    });
+  }
+}
+
+function cerrarPato(){
+  if (!duckOverlay || !duckVideo) return;
+  duckOverlay.classList.remove('show');
+  duckOverlay.setAttribute('aria-hidden', 'true');
+  duckOverlay.classList.remove('playing');
+  duckVideo.pause();
+  duckVideo.currentTime = 0;
+}
+
+if (comfortBtn) comfortBtn.addEventListener('click', abrirPato);
+if (duckClose)  duckClose.addEventListener('click', cerrarPato);
+
+if (duckVideo){
+  duckVideo.addEventListener('play',  () => duckOverlay.classList.add('playing'));
+  duckVideo.addEventListener('pause', () => duckOverlay.classList.remove('playing'));
+}
+
+if (duckOverlay){
+  duckOverlay.addEventListener('click', (e) => {
+    if (e.target === duckOverlay) cerrarPato();
   });
 }
-if (hideBtn){
-  hideBtn.addEventListener('click', () => {
-    sensitiveBody.classList.remove('revealed');
-    hideBtn.classList.add('hidden');
-  });
-}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && duckOverlay && duckOverlay.classList.contains('show')){
+    cerrarPato();
+  }
+});
+
+
 
 (function init(){
   restoreLocal();
